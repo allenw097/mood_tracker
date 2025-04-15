@@ -101,15 +101,17 @@ else:
     
     #If the user doesn't select a filter
     if filtered_data.empty:
-        st.header("Today's Mood Trends") #We output the default header of today's mood trends
-        today_entries = mood_data[mood_data['timestamp'].dt.date == date.today()] #We only want the moods that were submitted today
-        emoji_summary = today_entries['mood'].value_counts().sort_index() #Count the number of emojis
-        fig, chart_ax = plt.subplots() #Create a plot
-        emoji_summary.plot(kind="bar", ax=chart_ax, color="skyblue") 
-        chart_ax.set_title("Mood Frequency for Today")
-        chart_ax.set_xlabel("Mood")
-        chart_ax.set_ylabel("Count")
-        st.pyplot(fig)
+        today_entries = mood_data[mood_data['timestamp'].dt.date == date.today()]
+        if today_entries.empty:
+            st.info("No mood entries have been submitted today.")
+        else:
+            emoji_summary = today_entries['mood'].value_counts().sort_index()  # Count the number of each emoji
+            fig, chart_ax = plt.subplots()  # Create a plot
+            emoji_summary.plot(kind="bar", ax=chart_ax, color="skyblue")
+            chart_ax.set_title("Mood Frequency for Today")
+            chart_ax.set_xlabel("Mood")
+            chart_ax.set_ylabel("Count")
+            st.pyplot(fig)
     else:
         st.header("Filtered Mood Data") #create a header if user selected a filter
         
